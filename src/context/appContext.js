@@ -1,7 +1,11 @@
 import React, { useState, useReducer, useContext } from "react";
 
+import reducer from "./reducer";
+
+import { DISPLAY_ALERT } from "./actions";
+
 // this is the initial state.
-export const initialState = {
+const initialState = {
   isLoading: false,
   showAlert: false,
   alertText: "",
@@ -10,16 +14,22 @@ export const initialState = {
 
 const AppContext = React.createContext();
 const AppProvider = ({ children }) => {
-  const [state, setState] = useState(initialState);
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const displayAlert = () => {
+    dispatch({ type: DISPLAY_ALERT });
+  };
 
   return (
-    <AppContext.Provider value={{ ...state }}>{children}</AppContext.Provider>
+    <AppContext.Provider value={{ ...state, displayAlert }}>
+      {children}
+    </AppContext.Provider>
   );
 };
 
 // make sure use.
-export const useAppContext = () => {
+const useAppContext = () => {
   return useContext(AppContext);
 };
 
-export { AppProvider };
+export { AppProvider, initialState, useAppContext };
