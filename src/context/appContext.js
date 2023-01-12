@@ -3,6 +3,7 @@ import React, { useState, useReducer, useContext } from "react";
 import reducer from "./reducer";
 
 import { DISPLAY_ALERT } from "./actions";
+import { CLEAR_ALERT } from "./actions";
 
 // this is the initial state.
 const initialState = {
@@ -16,8 +17,16 @@ const AppContext = React.createContext();
 const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  //this alter the state value for the initial state.
   const displayAlert = () => {
     dispatch({ type: DISPLAY_ALERT });
+    clearAlert();
+  };
+
+  const clearAlert = () => {
+    setTimeout(() => {
+      dispatch({ type: CLEAR_ALERT });
+    }, 3000);
   };
 
   return (

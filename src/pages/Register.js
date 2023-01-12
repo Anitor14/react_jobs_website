@@ -3,8 +3,6 @@ import { Logo, FormRow, Alert } from "../components";
 import Wrapper from "../assets/wrappers/RegisterPage";
 import { useAppContext } from "../context/appContext";
 
-// const { isLoading, showAlert } = useAppContext();
-
 const initialState = {
   name: "",
   email: "",
@@ -14,14 +12,19 @@ const initialState = {
 const Register = () => {
   const [values, setValues] = useState(initialState);
   // global state and useNavigate
-
-  const { isLoading, showAlert } = useAppContext();
+  
+  const { isLoading, showAlert, displayAlert } = useAppContext();
   const handleChange = (e) => {
-    console.log(e.target);
+    setValues({ ...values, [e.target.name]: e.target.value });
   };
   const onSubmit = (e) => {
-    e.preventDefault();
-    console.log(e.target);
+    e.preventDefault(); // this prevents submission.
+    const { name, email, password, isMember } = values;
+    if (!email || !password || (!isMember && !name)) {
+      displayAlert();
+      return;
+    }
+    console.log("submission complete");
   };
   return (
     <Wrapper className="full-page">
