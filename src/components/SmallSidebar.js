@@ -4,6 +4,7 @@ import { FaTimes } from "react-icons/fa";
 import { useAppContext } from "../context/appContext";
 import links from "../utils/link";
 import { NavLink } from "react-router-dom";
+import NavLinks from "./NavLinks";
 import Logo from "./Logo";
 
 const SmallSidebar = () => {
@@ -23,7 +24,7 @@ const SmallSidebar = () => {
           <header>
             <Logo />
           </header>
-          <div className="nav-links">nav links</div>
+          <NavLinks toggleSidebar={toggleSidebar} />
         </div>
       </div>
     </Wrapper>
