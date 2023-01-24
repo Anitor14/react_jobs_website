@@ -17,6 +17,9 @@ import {
   SETUP_USER_SUCCESS,
   TOGGLE_SIDEBAR,
   LOGOUT_USER,
+  UPDATE_USER_BEGIN,
+  UPDATE_USER_SUCCESS,
+  UPDATE_USER_ERROR,
 } from "./actions";
 
 //set as default.
@@ -35,6 +38,15 @@ const initialState = {
   userLocation: userLocation || "",
   jobLocation: userLocation || "",
   showSidebar: false,
+  isEditing: false,
+  editJobId: "",
+  position: "",
+  company: "",
+  //jobLocation;
+  jobTypeOptions: ["full-time", "part-time", "remote", "internship"],
+  jobType: "full-time",
+  statusOptions: ["pending", "interview", "declined"],
+  status: "pending",
 };
 
 // const cookies = new Cookies();
@@ -56,7 +68,8 @@ const AppProvider = ({ children }) => {
       return Promise.reject(error.response);
     }
   );
-  //response interceptors
+
+  //response interceptors, this happens before the response hits.
   authFetch.interceptors.response.use(
     (response) => {
       return response;
@@ -64,7 +77,8 @@ const AppProvider = ({ children }) => {
     (error) => {
       console.log(error.response);
       if (error.response.status === 401) {
-        console.log(`AUTH ERROR`);
+        // console.log(`AUTH ERROR`);
+        logoutUser();
       }
       return Promise.reject(error);
     }
@@ -154,7 +168,6 @@ const AppProvider = ({ children }) => {
         payload: { msg: error.response.data.msg },
       });
     }
-
     clearAlert();
   };
 
@@ -174,12 +187,21 @@ const AppProvider = ({ children }) => {
   };
 
   const updateUser = async (currentUser) => {
+    dispatch({ type: UPDATE_USER_BEGIN });
     try {
       const { data } = await authFetch.patch("/auth/updateUser", currentUser);
-      console.log(data);
+      const { user, location, token } = data;
+      dispatch({ type: UPDATE_USER_BEGIN, payload: { user, location, token } });
+      addUserToLocalStorage({ user, location, token });
     } catch (error) {
-      console.log(error.response);
+      if (error.response.status !== 401) {
+        dispatch({
+          type: UPDATE_USER_ERROR,
+          payload: { msg: error.response.data.msg },
+        });
+      }
     }
+    clearAlert();
   };
   return (
     <AppContext.Provider
