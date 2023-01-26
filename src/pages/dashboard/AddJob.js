@@ -2,7 +2,6 @@ import React from "react";
 import { FormRow, Alert } from "../../components";
 import { useAppContext } from "../../context/appContext";
 import Wrapper from "../../assets/wrappers/DashboardFormPage";
-import { Form } from "react-router-dom";
 
 const AddJob = () => {
   const {
@@ -16,21 +15,25 @@ const AddJob = () => {
     jobTypeOptions,
     status,
     statusOptions,
+    handleChange,
+    clearValues,
+    createJob,
   } = useAppContext();
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!position || !company || !jobLocation) {
-      displayAlert();
+    // if (!position || !company || !jobLocation) {
+    //   displayAlert();
+    //   return;
+    // }
+    if (isEditing) {
       return;
     }
-    console.log("create job");
+    createJob();
   };
 
   const handleJobInput = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    console.log(`${name}:${value}`);
+    handleChange({ name: e.target.name, value: e.target.value });
   };
 
   return (
@@ -78,12 +81,22 @@ const AddJob = () => {
           />
 
           <div className="btn-container">
+            {/* submit button */}
             <button
               className="btn btn-block submit-btn"
               type="submit"
               onClick={handleSubmit}
             >
               submit
+            </button>
+            <button
+              className="btn btn-block clear-btn"
+              onClick={(e) => {
+                e.preventDefault();
+                clearValues();
+              }}
+            >
+              clear
             </button>
           </div>
         </div>
