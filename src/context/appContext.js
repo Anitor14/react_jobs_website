@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useContext } from "react";
+import React, { useState, useReducer, useContext, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import reducer from "./reducer";
@@ -25,6 +25,8 @@ import {
   CREATE_JOB_BEGIN,
   CREATE_JOB_SUCCESS,
   CREATE_JOB_ERROR,
+  GET_JOBS_BEGIN,
+  GET_JOBS_SUCCESS,
 } from "./actions";
 
 //set as default.
@@ -52,6 +54,11 @@ const initialState = {
   jobType: "full-time",
   statusOptions: ["pending", "interview", "declined"],
   status: "pending",
+  // get all job
+  jobs: [],
+  totalJobs: 0,
+  numOfPages: 1,
+  page: 1,
 };
 
 // const cookies = new Cookies();
@@ -196,7 +203,10 @@ const AppProvider = ({ children }) => {
     try {
       const { data } = await authFetch.patch("/auth/updateUser", currentUser);
       const { user, location, token } = data;
-      dispatch({ type: UPDATE_USER_BEGIN, payload: { user, location, token } });
+      dispatch({
+        type: UPDATE_USER_SUCCESS,
+        payload: { user, location, token },
+      });
       addUserToLocalStorage({ user, location, token });
     } catch (error) {
       if (error.response.status !== 401) {
@@ -245,6 +255,29 @@ const AppProvider = ({ children }) => {
     }
     clearAlert();
   };
+  const getJobs = async () => {
+    let url = "/jobs/getAllJobs";
+    dispatch({ type: GET_JOBS_BEGIN });
+    try {
+      const { data } = await authFetch(url);
+      console.log("we they here.", data);
+      const { jobs, totalJobs, numOfPages } = data;
+      dispatch({
+        type: GET_JOBS_SUCCESS,
+        payload: { jobs, totalJobs, numOfPages },
+      });
+    } catch (error) {
+      console.log(error.response);
+      // logoutUser();
+    }
+    clearAlert();
+  };
+  const setEditJob = (id) => {
+    console.log(`set edit job : ${id}`);
+  };
+  const deleteJob = (id) => {
+    console.log(`delete: ${id}`);
+  };
   return (
     <AppContext.Provider
       value={{
@@ -259,6 +292,9 @@ const AppProvider = ({ children }) => {
         handleChange,
         clearValues,
         createJob,
+        getJobs,
+        setEditJob,
+        deleteJob,
       }}
     >
       {children}
