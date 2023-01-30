@@ -54,7 +54,7 @@ const initialState = {
   jobTypeOptions: ["full-time", "part-time", "remote", "internship"],
   jobType: "full-time",
   statusOptions: ["pending", "interview", "declined"],
-  status: "pending",
+  status: "pending", 
   // get all job
   jobs: [],
   totalJobs: 0,

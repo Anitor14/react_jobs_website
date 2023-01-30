@@ -4,6 +4,7 @@ import { useAppContext } from "../context/appContext";
 // import Loading from "./Loading";
 import Job from "./Job";
 import Wrapper from "../assets/wrappers/JobsContainer";
+import Loading from "../components/Loading";
 
 const JobsContainer = () => {
   const { getJobs, jobs, isLoading, page, totalJobs } = useAppContext();
@@ -12,7 +13,7 @@ const JobsContainer = () => {
   }, []);
 
   if (isLoading) {
-    return <h1>Loading</h1>;
+    return <Loading center />;
   }
   if (jobs.length === 0) {
     return (
