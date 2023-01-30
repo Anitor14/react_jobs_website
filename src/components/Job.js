@@ -30,6 +30,15 @@ const Job = ({
       </header>
       <div className="content">
         {/* content center later */}
+        <div className="content">
+          <div className="content-center">
+            <JobInfo icon={<FaLocationArrow />} text={jobLocation} />
+            <JobInfo icon={<FaCalendar />} text={date} />
+            <JobInfo icon={<FaBriefcase />} text={jobType} />
+            <div className={`status ${status}`}>{status}</div>
+          </div>
+        </div>
+        {/* footer content */}
         <footer>
           <div className="actions">
             <Link
