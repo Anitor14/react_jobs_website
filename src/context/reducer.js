@@ -265,6 +265,15 @@ const reducer = (state, action) => {
   if (action.type === EDIT_JOB_BEGIN) {
     return { ...state, isLoading: true };
   }
+  if (action.type === EDIT_JOB_ERROR) {
+    return {
+      ...state,
+      isLoading: false,
+      showAlert: true,
+      alertType: "danger",
+      alertText: action.payload.msg,
+    };
+  }
   throw new Error(`no such action: ${action.type}`);
 };
 
