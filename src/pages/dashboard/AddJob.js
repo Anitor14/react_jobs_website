@@ -29,6 +29,7 @@ const AddJob = () => {
     }
     // this is when the isEditing is true.
     if (isEditing) {
+      console.log(`${isEditing} , is here `);
       editJob();
       return;
     }

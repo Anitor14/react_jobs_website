@@ -97,7 +97,7 @@ const Register = () => {
         </button>
         <p>
           {/* conditional rendering based on the value of isMember */}
-          {values.isMember ? "Not a member yet" : "Already a member"}{" "}
+          {values.isMember ? "Not a member yet" : "Already a member"}
           <button type="button" onClick={toggleMember} className="member-btn">
             {values.isMember ? "Register" : "login"}
           </button>
