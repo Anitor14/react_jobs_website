@@ -34,6 +34,7 @@ import {
   EDIT_JOB_ERROR,
   SHOW_STATS_BEGIN,
   SHOW_STATS_SUCCESS,
+  CLEAR_FILTERS,
 } from "./actions";
 
 //set as default.
@@ -68,6 +69,12 @@ const initialState = {
   page: 1,
   stats: {},
   monthlyApplications: [],
+  //search related states
+  search: "",
+  searchStatus: "all",
+  searchType: "all",
+  sort: "latest",
+  sortOptions: ["latest", "oldest", "a-z", "z-a"],
 };
 
 // const cookies = new Cookies();
@@ -227,15 +234,22 @@ const AppProvider = ({ children }) => {
     }
     clearAlert();
   };
+
   const handleChange = ({ name, value }) => {
     dispatch({
       type: HANDLE_CHANGE,
       payload: { name, value },
     });
   };
+
+  const clearFilters = () => {
+    dispatch({ type: CLEAR_FILTERS });
+  };
+
   const clearValues = () => {
     dispatch({ type: CLEAR_VALUES });
   };
+
   const createJob = async () => {
     dispatch({ type: CREATE_JOB_BEGIN });
     try {
@@ -264,12 +278,16 @@ const AppProvider = ({ children }) => {
     }
     clearAlert();
   };
+
   const getJobs = async () => {
-    let url = "/jobs/getAllJobs";
+    const { search, searchStatus, searchType, sort } = state;
+    let url = `/jobs/getAllJobs/?status=${searchStatus}&jobType=${searchType}&sort=${sort}`;
+    if(search){
+      url = url + `&search=${search}`
+    }
     dispatch({ type: GET_JOBS_BEGIN });
     try {
       const { data } = await authFetch(url);
-      console.log("we they here.", data);
       const { jobs, totalJobs, numOfPages } = data;
       dispatch({
         type: GET_JOBS_SUCCESS,
@@ -281,9 +299,11 @@ const AppProvider = ({ children }) => {
     }
     clearAlert();
   };
+
   const setEditJob = (id) => {
     dispatch({ type: SET_EDIT_JOB, payload: { id } });
   };
+
   const editJob = async (id) => {
     dispatch({ type: EDIT_JOB_BEGIN });
     try {
@@ -306,6 +326,7 @@ const AppProvider = ({ children }) => {
     }
     clearAlert();
   };
+
   const deleteJob = async (id) => {
     dispatch({ type: DELETE_JOB_BEGIN });
     try {
@@ -315,6 +336,7 @@ const AppProvider = ({ children }) => {
       logoutUser();
     }
   };
+
   const showStats = async () => {
     dispatch({ type: SHOW_STATS_BEGIN });
     try {
@@ -332,6 +354,7 @@ const AppProvider = ({ children }) => {
     }
     clearAlert();
   };
+
   return (
     <AppContext.Provider
       value={{
@@ -351,6 +374,7 @@ const AppProvider = ({ children }) => {
         deleteJob,
         editJob,
         showStats,
+        clearFilters,
       }}
     >
       {children}
